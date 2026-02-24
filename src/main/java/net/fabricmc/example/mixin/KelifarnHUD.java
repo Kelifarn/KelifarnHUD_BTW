@@ -32,8 +32,8 @@ public class KelifarnHUD {
 		String afStatus = "AutoFish: " + (Holder.autoFishEnabled ? "ON" : "OFF");
 		int afColor = Holder.autoFishEnabled ? 0xFF00FF00 : 0xFFFF0000;  // Green/Red
 		int afWidth = mc.fontRenderer.getStringWidth(afStatus);
-		int afX = screenWidth - afWidth - 10;
-		int afY = 30;  // Stack below time
+		int afX = 20;
+		int afY = 10;  // Stack below time
 		mc.fontRenderer.drawStringWithShadow(afStatus, afX, afY, afColor);
 	}
 	private static String getWorldTimeString(long worldTime) {

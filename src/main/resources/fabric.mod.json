@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "iteminfo",
+  "id": "kelifarnhud",
   "version": "${version}",
-  "name": "Items Info",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Kelifarn's HUD",
+  "description": "HUD for BTW with autofish and minimap",
   "authors": [
     "Kelifarn"
   ],
@@ -16,14 +16,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "net.fabricmc.example.InitMod"
     ],
     "btw:addon": [
       "btw.community.example.ExampleAddon"
     ]
   },
   "custom": {
-    "btw:addon_prefix": "EX"
+    "btw:addon_prefix": "KHUD"
   },
   "mixins": [
     "modid.mixins.json"
