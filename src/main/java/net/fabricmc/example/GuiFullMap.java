@@ -64,10 +64,21 @@ public class GuiFullMap extends GuiScreen {
         }
 
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        // Render bookmark labels (with texture 2D enabled)
+        for (Bookmark b : Holder.bookmarks) {
+            double screenX = width / 2.0 + (b.x - offsetX) * mapScale;
+            double screenY = height / 2.0 + (b.z - offsetZ) * mapScale;
+
+            if (screenX > 0 && screenX < width && screenY > 0 && screenY < height) {
+                mc.fontRenderer.drawStringWithShadow(b.name, (int) screenX + 5, (int) screenY - 4, 0xFFFFFF);
+            }
+        }
+
         super.drawScreen(mouseX, mouseY, partialTicks);
 
         // Instructions
-        drawCenteredString(mc.fontRenderer, "Full Map - Click to Pan, Right Click to Mark", width / 2, 10, 0xFFFFFF);
+        drawCenteredString(mc.fontRenderer, "Full Map - Click to Pan, Right Click to Mark, Click Dot to Edit", width / 2, 10, 0xFFFFFF);
     }
 
     @Override
@@ -77,40 +88,39 @@ public class GuiFullMap extends GuiScreen {
         int worldZ = (int) (offsetZ + (y - res.getScaledHeight() / 2.0) / mapScale);
 
         if (button == 0) { // Left click
-            // Check if clicking near existing bookmark to toggle permanent
-            boolean toggled = false;
+            // Check if clicking near existing bookmark to edit it
+            Bookmark clickedBookmark = null;
             for (Bookmark b : Holder.bookmarks) {
                 double dx = b.x - worldX;
                 double dz = b.z - worldZ;
                 if (Math.abs(dx) < 10 / mapScale && Math.abs(dz) < 10 / mapScale) {
-                    b.permanent = !b.permanent;
-                    toggled = true;
+                    clickedBookmark = b;
                     break;
                 }
             }
 
-            if (!toggled) {
+            if (clickedBookmark != null) {
+                mc.displayGuiScreen(new GuiBookmarkEditor(this, clickedBookmark));
+            } else {
                 draggingX = x;
                 draggingY = y;
             }
-        } else if (button == 1) { // Right click for bookmark
-            // Check if clicking near existing bookmark to remove it
-            boolean removed = false;
-            Iterator<Bookmark> it = Holder.bookmarks.iterator();
-            while (it.hasNext()) {
-                Bookmark b = it.next();
+        } else if (button == 1) { // Right click
+            // Check if clicking near existing bookmark to edit it
+            Bookmark clickedBookmark = null;
+            for (Bookmark b : Holder.bookmarks) {
                 double dx = b.x - worldX;
                 double dz = b.z - worldZ;
                 if (Math.abs(dx) < 10 / mapScale && Math.abs(dz) < 10 / mapScale) {
-                    it.remove();
-                    removed = true;
+                    clickedBookmark = b;
                     break;
                 }
             }
 
-            if (!removed) {
-                // Add with default permanent = true
-                Holder.bookmarks.add(new Bookmark(worldX, worldZ, "Point", 0xFFFF0000, true));
+            if (clickedBookmark != null) {
+                mc.displayGuiScreen(new GuiBookmarkEditor(this, clickedBookmark));
+            } else {
+                mc.displayGuiScreen(new GuiBookmarkEditor(this, worldX, worldZ));
             }
         }
     }

@@ -14,7 +14,6 @@ public class KelifarnHUD {
 	@Inject(at = @At("RETURN"), method = "renderGameOverlay(FZII)V")
 	private void renderAttributes(CallbackInfo info) {
 		ScaledResolution var5 = new ScaledResolution(this.mc.gameSettings, this.mc.displayWidth, this.mc.displayHeight);
-		int screenWidth = var5.getScaledWidth();
 		int var7 = var5.getScaledHeight();
 		if (mc.currentScreen != null) return;  // Skip if menu open
 		var curItem = mc.thePlayer.getCurrentEquippedItem();
@@ -31,7 +30,6 @@ public class KelifarnHUD {
 		// AutoFish status (top-right)
 		String afStatus = "AutoFish: " + (Holder.autoFishEnabled ? "ON" : "OFF");
 		int afColor = Holder.autoFishEnabled ? 0xFF00FF00 : 0xFFFF0000;  // Green/Red
-		int afWidth = mc.fontRenderer.getStringWidth(afStatus);
 		int afX = 20;
 		int afY = 10;  // Stack below time
 		mc.fontRenderer.drawStringWithShadow(afStatus, afX, afY, afColor);
@@ -55,51 +53,6 @@ public class KelifarnHUD {
 		} else if(moonState == 4){
 			moonStateString = "◯";
 		}
-
 		return dayType + String.format(" %02d:%02d %s", hours, minutes,moonStateString);
 	}
 }
-//    private void renderWeapon() {
-//        ItemStack itemStack = client.player.inventory.getMainHandStack();
-//        if (itemStack != null) {
-//            if (itemStack.getItem().isDamageable()) {
-//                int x = 5;
-//                int y = 5 + 15 + (client.player.inventory.armor.length) * 16;
-//
-//                int stringWidth = this.textRenderer.getStringWidth(itemStack.getMaxDamage() - itemStack.getDamage() + "/" + itemStack.getMaxDamage());
-//
-//                ItemStack arrowItemStack = null;
-//                int arrows = 0;
-//                if (itemStack.getItem() instanceof BowItem) {
-//                    for (ItemStack itemStack1 : client.player.inventory.main) {
-//                        if (itemStack1 != null && itemStack1.getItem().equals(Items.ARROW)) {
-//                            arrows += itemStack1.count;
-//                            arrowItemStack = itemStack1;
-//                        }
-//                    }
-//                    stringWidth = Math.max(stringWidth, this.textRenderer.getStringWidth("x " + arrows));
-//                }
-//
-//                fill(x, y - 3, x + 22 + stringWidth + 5, y + 19 + (arrowItemStack != null ? 16 : 0), -1873784752);
-//
-//                if (arrowItemStack != null) {
-//                    this.itemRenderer.renderInGuiWithOverrides(arrowItemStack, x + 3, y + 16);
-//                    this.textRenderer.draw("x " + arrows, x + 22, y + 20, Color.WHITE.getRGB());
-//                }
-//
-//                this.itemRenderer.renderInGuiWithOverrides(itemStack, x + 3, y);
-//                this.textRenderer.draw(itemStack.getMaxDamage() - itemStack.getDamage() + "/" + itemStack.getMaxDamage(), x + 22, y + 4, Color.WHITE.getRGB());
-//            }
-//            if (itemStack.getItem() instanceof PotionItem) {
-//                int x = 5;
-//                int y = 5 + 15 + (client.player.inventory.armor.length) * 16;
-//
-//                int stringWidth = this.textRenderer.getStringWidth(itemStack.getTooltip(client.player, false).get(1).split("7", 2)[1]);
-//                fill(x, y - 3, x + 22 + stringWidth + 5, y + 19, -1873784752);
-//
-//                this.itemRenderer.renderInGuiWithOverrides(itemStack, x + 3, y);
-//                this.textRenderer.draw(itemStack.getTooltip(client.player, false).get(1).split("7", 2)[1], x + 22, y + 4, Color.WHITE.getRGB());
-//            }
-//        }
-//    }
-//

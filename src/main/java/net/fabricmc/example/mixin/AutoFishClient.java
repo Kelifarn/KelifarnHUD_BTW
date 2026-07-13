@@ -4,6 +4,9 @@ import btw.item.items.FishingRodItemBaited;
 import btw.item.items.RottenFleshItem;
 import emi.dev.emi.emi.api.EmiApi;
 import emi.dev.emi.emi.api.stack.EmiStack;
+import net.fabricmc.example.GuiBookmarkEditor;
+import net.fabricmc.example.GuiAbilitiesTree;
+import net.fabricmc.example.GuiBookmarkEditor;
 import net.fabricmc.example.GuiFullMap;
 import net.fabricmc.example.Holder;
 import net.minecraft.src.*;
@@ -18,7 +21,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import static btw.item.BTWItemIDs.FISHING_ROD_BAITED_ITEM_ID;
 
 @Mixin(EntityClientPlayerMP.class)
 @Environment(EnvType.CLIENT)
@@ -26,9 +28,10 @@ public class AutoFishClient {
 	// Internal state
 	private static boolean keyPressed = false;
 	private static boolean mapKeyPressed = false;
+	private static boolean bookmarkKeyPressed = false;
+	private static boolean abilitiesKeyPressed = false;
 	private static boolean NeedToFish = false;
 	private static int actionDelay = 0;
-	private static int tryCount = 0;
 
 	@Inject(method = "onUpdate", at = @At("HEAD"))
 	private void autoFishTick(CallbackInfo ci) {
@@ -48,6 +51,38 @@ public class AutoFishClient {
 			mc.displayGuiScreen(new GuiFullMap());
 		}
 		mapKeyPressed = Keyboard.isKeyDown(Keyboard.KEY_M);
+
+		// Open bookmark editor on B press (edge detection)
+		if (Keyboard.isKeyDown(Keyboard.KEY_B) && !bookmarkKeyPressed) {
+			int posX = (int) Math.floor(player.posX);
+			int posZ = (int) Math.floor(player.posZ);
+			mc.displayGuiScreen(new GuiBookmarkEditor(null, posX, posZ));
+		}
+		bookmarkKeyPressed = Keyboard.isKeyDown(Keyboard.KEY_B);
+
+		// Open abilities tree on K press (edge detection)
+		if (Keyboard.isKeyDown(Keyboard.KEY_K) && !abilitiesKeyPressed) {
+			mc.displayGuiScreen(new GuiAbilitiesTree());
+		}
+		abilitiesKeyPressed = Keyboard.isKeyDown(Keyboard.KEY_K);
+
+		if (player != null) {
+			// Track healing
+			int currentHealth = (int)player.getHealth();
+			if (Holder.lastHealth != -1 && currentHealth > Holder.lastHealth) {
+				int diff = currentHealth - Holder.lastHealth;
+				Holder.addSurvivalXP(diff * 15);
+			}
+			Holder.lastHealth = currentHealth;
+
+			// Track eating (hunger restore)
+			int currentFood = player.getFoodStats().getFoodLevel();
+			if (Holder.lastFood != -1 && currentFood > Holder.lastFood) {
+				int diff = currentFood - Holder.lastFood;
+				Holder.addSurvivalXP(diff * 10);
+			}
+			Holder.lastFood = currentFood;
+		}
 
 		if (!Holder.autoFishEnabled)
 			return;
