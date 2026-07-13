@@ -5,6 +5,9 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [],
   "client": [
+    "EntityLivingMixin",
+    "PlayerControllerMixin",
+    "EntityPlayerMixin",
     "KelifarnHUD",
     "AutoFishClient",
     "MinimapMixin",
